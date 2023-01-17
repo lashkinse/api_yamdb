@@ -12,20 +12,22 @@ class Command(BaseCommand):
 
     USERS_TABLE = "users_user"
     CSV_TO_TABLE_MAP = (
+        ("users.csv", USERS_TABLE),
         ("category.csv", "reviews_category"),
         ("genre.csv", "reviews_genre"),
         ("titles.csv", "reviews_title"),
-        ("users.csv", USERS_TABLE),
+        ("genre_title.csv", "reviews_genretitle"),
     )
 
     @staticmethod
     def fix_users_df(df):
         df = df.fillna("")
-        df.insert(len(df.columns), "password", "")
-        df.insert(len(df.columns), "is_superuser", 0)
-        df.insert(len(df.columns), "is_staff", 0)
-        df.insert(len(df.columns), "is_active", 1)
-        df.insert(len(df.columns), "date_joined", datetime.now())
+        index = len(df.columns)
+        df.insert(index, "password", "")
+        df.insert(index, "is_superuser", 0)
+        df.insert(index, "is_staff", 0)
+        df.insert(index, "is_active", 1)
+        df.insert(index, "date_joined", datetime.now())
         return df
 
     def import_csv(self, csv_file, table_name):
