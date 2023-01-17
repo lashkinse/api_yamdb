@@ -9,21 +9,27 @@ class Command(BaseCommand):
     help = "Imports the data from the CSV files into the database"
     CSV_ROOT = "./static/data"
     DATABASE_PATH = "./db.sqlite3"
+
     USERS_TABLE = "users_user"
-    CSV_TO_IMPORT = (
+    CSV_TO_TABLE_MAP = (
+        ("users.csv", USERS_TABLE),
         ("category.csv", "reviews_category"),
         ("genre.csv", "reviews_genre"),
-        ("users.csv", USERS_TABLE),
+        ("titles.csv", "reviews_title"),
+        ("genre_title.csv", "reviews_genretitle"),
+        ("comments.csv", "reviews_comment"),
+        ("review.csv", "reviews_review"),
     )
 
     @staticmethod
     def fix_users_df(df):
         df = df.fillna("")
-        df.insert(len(df.columns), "password", "")
-        df.insert(len(df.columns), "is_superuser", 0)
-        df.insert(len(df.columns), "is_staff", 0)
-        df.insert(len(df.columns), "is_active", 1)
-        df.insert(len(df.columns), "date_joined", datetime.now())
+        index = len(df.columns)
+        df.insert(index, "password", "")
+        df.insert(index, "is_superuser", 0)
+        df.insert(index, "is_staff", 0)
+        df.insert(index, "is_active", 1)
+        df.insert(index, "date_joined", datetime.now())
         return df
 
     def import_csv(self, csv_file, table_name):
@@ -45,11 +51,11 @@ class Command(BaseCommand):
             return False
         return True
 
-    def import_csv_files(self):
+    def import_all_csv(self):
         """
         Imports the data from the CSV files into the database
         """
-        for csv_file, table_name in self.CSV_TO_IMPORT:
+        for csv_file, table_name in self.CSV_TO_TABLE_MAP:
             if self.import_csv(self.CSV_ROOT + "/" + csv_file, table_name):
                 print(f"Successfully imported {csv_file}")
             else:
@@ -57,5 +63,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("Importing data...")
-        self.import_csv_files()
+        self.import_all_csv()
         print("Finished importing data")

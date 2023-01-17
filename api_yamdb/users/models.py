@@ -40,3 +40,7 @@ class User(AbstractUser):
     @property
     def is_moderator(self):
         return self.role == User.MODERATOR
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
