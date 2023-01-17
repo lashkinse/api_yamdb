@@ -17,6 +17,8 @@ class Command(BaseCommand):
         ("genre.csv", "reviews_genre"),
         ("titles.csv", "reviews_title"),
         ("genre_title.csv", "reviews_genretitle"),
+        ("comments.csv", "reviews_comment"),
+        ("review.csv", "reviews_review"),
     )
 
     @staticmethod
