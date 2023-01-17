@@ -9,10 +9,12 @@ class Command(BaseCommand):
     help = "Imports the data from the CSV files into the database"
     CSV_ROOT = "./static/data"
     DATABASE_PATH = "./db.sqlite3"
+
     USERS_TABLE = "users_user"
-    CSV_TO_IMPORT = (
+    CSV_TO_TABLE_MAP = (
         ("category.csv", "reviews_category"),
         ("genre.csv", "reviews_genre"),
+        ("titles.csv", "reviews_title"),
         ("users.csv", USERS_TABLE),
     )
 
@@ -45,11 +47,11 @@ class Command(BaseCommand):
             return False
         return True
 
-    def import_csv_files(self):
+    def import_all_csv(self):
         """
         Imports the data from the CSV files into the database
         """
-        for csv_file, table_name in self.CSV_TO_IMPORT:
+        for csv_file, table_name in self.CSV_TO_TABLE_MAP:
             if self.import_csv(self.CSV_ROOT + "/" + csv_file, table_name):
                 print(f"Successfully imported {csv_file}")
             else:
@@ -57,5 +59,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("Importing data...")
-        self.import_csv_files()
+        self.import_all_csv()
         print("Finished importing data")
