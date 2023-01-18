@@ -45,7 +45,6 @@ class Title(models.Model):
     )
     category = models.ForeignKey(
         Category,
-        db_column="category",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -91,7 +90,6 @@ class Review(models.Model):
     text = models.TextField(verbose_name="Текст отзыва")
     author = models.ForeignKey(
         User,
-        db_column="author",
         verbose_name="Автор",
         on_delete=models.CASCADE,
         related_name="reviews",
@@ -129,7 +127,6 @@ class Comment(models.Model):
     text = models.TextField(verbose_name="Текст комментария")
     author = models.ForeignKey(
         User,
-        db_column="author",
         verbose_name="Автор",
         on_delete=models.CASCADE,
         related_name="comments",
