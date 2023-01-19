@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from rest_framework import viewsets
 
 from api.permissions import IsAdminOrReadOnly
@@ -19,7 +18,5 @@ class GenreViewSet(viewsets.ModelViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.annotate(rating=Avg('review__score')).all()
+    queryset = Title.objects.all()
     permission_classes = (IsAdminOrReadOnly,)
-    filterset_fields = ['name']
-    ordering_fields = ('name',)
