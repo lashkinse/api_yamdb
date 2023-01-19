@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from users.validators import validate_username
+
 
 class User(AbstractUser):
     ADMIN = "admin"
@@ -14,12 +16,13 @@ class User(AbstractUser):
 
     username = models.CharField(
         unique=True,
-        max_length=30,
+        max_length=150,
         verbose_name="Имя пользователя",
+        validators=(validate_username,),
     )
     email = models.EmailField(
         unique=True,
-        max_length=100,
+        max_length=254,
         verbose_name="Адрес электронной почты",
     )
     role = models.CharField(

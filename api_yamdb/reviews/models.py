@@ -10,9 +10,9 @@ class Category(models.Model):
     """Модель категорий."""
 
     name = models.TextField(
-        verbose_name="Наименование категории", max_length=100
+        verbose_name="Наименование категории", max_length=256
     )
-    slug = models.SlugField("slug", unique=True, db_index=True)
+    slug = models.SlugField("slug", max_length=50, unique=True, db_index=True)
 
     def __str__(self):
         return self.name
@@ -25,8 +25,8 @@ class Category(models.Model):
 class Genre(models.Model):
     """Модель жанров."""
 
-    name = models.TextField(verbose_name="Наименование жанра", max_length=100)
-    slug = models.SlugField("slug", unique=True, db_index=True)
+    name = models.TextField(verbose_name="Наименование жанра", max_length=256)
+    slug = models.SlugField("slug", max_length=50, unique=True, db_index=True)
 
     def __str__(self):
         return self.name
@@ -39,7 +39,7 @@ class Genre(models.Model):
 class Title(models.Model):
     """Модель заголовков."""
 
-    name = models.TextField("Название", max_length=100, db_index=True)
+    name = models.TextField("Название", max_length=256, db_index=True)
     year = models.PositiveSmallIntegerField(
         "Год", blank=True, db_index=True, validators=(validate_year,)
     )
@@ -50,7 +50,7 @@ class Title(models.Model):
         null=True,
     )
     genre = models.ManyToManyField(Genre, blank=True, db_index=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    description = models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
         return self.name
