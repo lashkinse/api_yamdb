@@ -35,6 +35,11 @@ class User(AbstractUser):
         blank=True,
         verbose_name="Биография пользователя",
     )
+    confirmation_code = models.CharField(
+        max_length=10,
+        blank=True,
+        verbose_name="Код подтверждения",
+    )
 
     @property
     def is_admin(self):
