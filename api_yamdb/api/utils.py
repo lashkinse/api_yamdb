@@ -18,7 +18,7 @@ def send_confirmation_code(user):
         subject="Код подтверждения Yamdb",
         message=(
             "Регистрация завершена. "
-            f"Ваш код подтверждения: {user.confirmation_code}"
+            f"Ваш код доступа: {user.confirmation_code}"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],

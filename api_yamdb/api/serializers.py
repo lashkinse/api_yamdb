@@ -91,5 +91,19 @@ class SignUpSerializer(serializers.Serializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-    def update(self, instance, validated_data):
-        pass
+
+class GetTokenSerializer(serializers.Serializer):
+    """Сериализатор для получения токена"""
+
+    username = serializers.CharField(
+        required=True,
+        max_length=settings.USERNAME_MAX_LENGTH,
+        validators=[
+            validators.validate_username,
+        ],
+    )
+
+    confirmation_code = serializers.CharField(
+        required=True,
+        max_length=settings.CONFIRMATION_CODE_MAX_LENGTH,
+    )
