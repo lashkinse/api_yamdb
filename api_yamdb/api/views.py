@@ -1,12 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import status, views, mixins
+from rest_framework import status, views
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.permissions import IsAdminOrReadOnly, IsAdmin
@@ -68,51 +67,41 @@ class SignUpView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = SignUpSerializer(data=request.data, many=False)
-        if serializer.is_valid():
-            username = serializer.validated_data.get("username")
-            email = serializer.validated_data.get("email")
-            is_user_exists = User.objects.filter(username=username).exists()
-            is_email_exists = User.objects.filter(email=email).exists()
-            if not (is_user_exists and is_email_exists):
-                if is_user_exists:
-                    return Response(
-                        {
-                            "detail": "Пользователь с таким именем уже существует"
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-                if is_email_exists:
-                    return Response(
-                        {
-                            "detail": "Пользователь с таким email уже существует"
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-            user, created = User.objects.get_or_create(
-                username=username, email=email
-            )
-            user.confirmation_code = generate_confirmation_code()
-            user.save()
-            send_confirmation_code(user)
-            return Response(
-                {
-                    "email": user.email,
-                    "username": user.username,
-                }
-            )
-        else:
+        if not serializer.is_valid():
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
+        username = serializer.validated_data.get("username")
+        email = serializer.validated_data.get("email")
+        is_user_exists = User.objects.filter(username=username).exists()
+        is_email_exists = User.objects.filter(email=email).exists()
+        if not (is_user_exists and is_email_exists):
+            if is_user_exists:
+                return Response(
+                    {"detail": "Пользователь с таким именем уже существует"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if is_email_exists:
+                return Response(
+                    {"detail": "Пользователь с таким email уже существует"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        user, created = User.objects.get_or_create(
+            username=username, email=email
+        )
+        user.confirmation_code = generate_confirmation_code()
+        user.save()
+        send_confirmation_code(user)
+        return Response(
+            {
+                "email": user.email,
+                "username": user.username,
+            }
+        )
 
-class UserViewSet(
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+
+class UserViewSet(viewsets.ModelViewSet):
     """Просмотр и редактирование пользователя"""
 
     queryset = User.objects.all()
@@ -121,6 +110,7 @@ class UserViewSet(
     filter_backends = (SearchFilter,)
     lookup_field = "username"
     search_fields = ("username",)
+    http_method_names = ["get", "post", "patch", "delete"]
 
     @action(
         methods=("get", "patch"),
@@ -130,4 +120,15 @@ class UserViewSet(
         permission_classes=[IsAuthenticated],
     )
     def my_account(self, request):
-        pass
+        serializer = self.get_serializer(
+            request.user, data=request.data, partial=True
+        )
+        if not (serializer.is_valid()):
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+        if request.method == "GET":
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer.validated_data["role"] = request.user.role
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
