@@ -88,9 +88,6 @@ class SignUpSerializer(serializers.Serializer):
         required=True, max_length=settings.EMAIL_MAX_LENGTH
     )
 
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
 
 class GetTokenSerializer(serializers.Serializer):
     """Сериализатор для получения токена"""

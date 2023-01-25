@@ -1,17 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, views
 from rest_framework import viewsets
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly, IsAdmin
 from api.serializers import (
     CategorySerializer,
     GenreSerializer,
     SignUpSerializer,
     GetTokenSerializer,
+    UserSerializer,
 )
 from api.utils import send_confirmation_code, generate_confirmation_code
 from reviews.models import Category, Genre, Title
@@ -36,7 +36,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class GetTokenView(ObtainAuthToken):
+class GetTokenView(views.APIView):
     """Получение токена для авторизации пользователя"""
 
     def post(self, request, *args, **kwargs):
@@ -59,14 +59,28 @@ class GetTokenView(ObtainAuthToken):
             )
 
 
-class SignUpView(ObtainAuthToken):
+class SignUpView(views.APIView):
     """Регистрация пользователя"""
 
     def post(self, request, *args, **kwargs):
         serializer = SignUpSerializer(data=request.data, many=False)
         if serializer.is_valid():
-            user = serializer.save()
-            user.confirmation_code = generate_confirmation_code()
+            username = serializer.validated_data.get("username")
+            if User.objects.filter(username=username).exists():
+                return Response(
+                    {"detail": "Пользователь с таким именем уже существует"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            email = serializer.validated_data.get("email")
+            if User.objects.filter(email=email).exists():
+                return Response(
+                    {"detail": "Пользователь с таким email уже существует"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            user = User(
+                **serializer.validated_data,
+                confirmation_code=generate_confirmation_code(),
+            )
             user.save()
             send_confirmation_code(user)
             return Response(
@@ -79,3 +93,11 @@ class SignUpView(ObtainAuthToken):
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """Просмотр и редактирование пользователя"""
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdmin,)
