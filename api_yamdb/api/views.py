@@ -1,9 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import status, views
+from rest_framework import status, views, mixins
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.permissions import IsAdminOrReadOnly, IsAdmin
@@ -103,7 +106,13 @@ class SignUpView(views.APIView):
             )
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """Просмотр и редактирование пользователя"""
 
     queryset = User.objects.all()
@@ -112,3 +121,13 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter,)
     lookup_field = "username"
     search_fields = ("username",)
+
+    @action(
+        methods=("get", "patch"),
+        detail=False,
+        url_path="me",
+        url_name="my-account",
+        permission_classes=[IsAuthenticated],
+    )
+    def my_account(self, request):
+        pass
