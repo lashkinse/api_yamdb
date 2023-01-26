@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -16,29 +17,30 @@ class User(AbstractUser):
 
     username = models.CharField(
         unique=True,
-        max_length=150,
+        max_length=settings.USERNAME_MAX_LENGTH,
         verbose_name="Имя пользователя",
         validators=(validate_username,),
     )
     email = models.EmailField(
         unique=True,
-        max_length=254,
+        max_length=settings.EMAIL_MAX_LENGTH,
         verbose_name="Адрес электронной почты",
     )
     role = models.CharField(
-        max_length=10,
+        max_length=settings.USER_BIO_MAX_LENGTH,
         choices=USER_ROLE_CHOICES,
         default=USER,
         verbose_name="Роль пользователя",
     )
     bio = models.TextField(
+        max_length=settings.USER_BIO_MAX_LENGTH,
         blank=True,
         verbose_name="Биография пользователя",
     )
     confirmation_code = models.CharField(
-        max_length=10,
+        max_length=settings.CONFIRMATION_CODE_MAX_LENGTH,
         blank=True,
-        verbose_name="Код подтверждения",
+        verbose_name="Код доступа",
     )
 
     @property

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -93,9 +94,9 @@ STATICFILES_DIRS = ((BASE_DIR / "static/"),)
 AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
+    "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
@@ -105,3 +106,21 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
 }
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+USERNAME_MAX_LENGTH = 100
+EMAIL_MAX_LENGTH = 254
+USER_BIO_MAX_LENGTH = 1024
+USER_ROLE_MAX_LENGTH = 100
+
+CONFIRMATION_CODE_MAX_LENGTH = 10
+CONFIRMATION_CODE_MIN_VALUE = 1000000000
+CONFIRMATION_CODE_MAX_VALUE = 9999999999
+
+DEFAULT_FROM_EMAIL = "My Domain <noreply@mydomain.com>"
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "tmp/email-messages/"
