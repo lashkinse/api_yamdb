@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from api.mixins import CustomMixin
 from api.permissions import IsAdminOrReadOnly, IsAdmin
 from api.serializers import (
     CategorySerializer,
@@ -22,19 +23,25 @@ from reviews.models import Category, Genre, Title
 User = get_user_model()
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(CustomMixin):
+    """Категории"""
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(CustomMixin):
+    """Жанры"""
+
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+    """Произведения"""
+
     queryset = Title.objects.all()
     permission_classes = (IsAdminOrReadOnly,)
 
@@ -109,14 +116,15 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdmin,)
     filter_backends = (SearchFilter,)
     lookup_field = "username"
-    search_fields = ("username",)
+    search_fields = [
+        "=username",
+    ]
     http_method_names = ["get", "post", "patch", "delete"]
 
     @action(
         methods=("get", "patch"),
         detail=False,
         url_path="me",
-        url_name="my-account",
         permission_classes=[IsAuthenticated],
     )
     def my_account(self, request):
