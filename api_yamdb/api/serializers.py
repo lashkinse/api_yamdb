@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 from users import validators
 
 User = get_user_model()
@@ -30,11 +29,27 @@ class GenreSerializer(serializers.ModelSerializer):
         )
 
 
-class TitleSerializer(serializers.ModelSerializer):
+class TitleWriteSerializer(serializers.ModelSerializer):
+    """Сериализатор произведений"""
+
+    genre = serializers.SlugRelatedField(
+        queryset=Genre.objects.all(), slug_field="slug", many=True
+    )
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field="slug"
+    )
+
+    class Meta:
+        model = Title
+        fields = "__all__"
+
+
+class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор произведений"""
 
     genre = GenreSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
+    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Title
@@ -42,6 +57,8 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source="author.username")
+
     class Meta:
         model = Review
         fields = ("id", "text", "author", "score", "pub_date")
@@ -50,9 +67,16 @@ class ReviewSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     """Сериализатор комментариев"""
 
+    author = serializers.ReadOnlyField(source="author.username")
+
     class Meta:
         model = Comment
-        fields = ("id", "text", "author", "pub_date")
+        fields = (
+            "id",
+            "text",
+            "author",
+            "pub_date",
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):

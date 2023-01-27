@@ -13,12 +13,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='category',
             name='name',
-            field=models.TextField(max_length=256, verbose_name='Наименование категории'),
+            field=models.TextField(
+                max_length=256, verbose_name='Наименование категории'
+            ),
         ),
         migrations.AlterField(
             model_name='genre',
             name='name',
-            field=models.TextField(max_length=256, verbose_name='Наименование жанра'),
+            field=models.TextField(
+                max_length=256, verbose_name='Наименование жанра'
+            ),
         ),
         migrations.AlterField(
             model_name='title',
@@ -28,6 +32,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='title',
             name='name',
-            field=models.TextField(db_index=True, max_length=256, verbose_name='Название'),
+            field=models.TextField(
+                db_index=True, max_length=256, verbose_name='Название'
+            ),
         ),
     ]

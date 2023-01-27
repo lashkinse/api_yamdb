@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 
 def validate_number(value):
-    if not value.isdigit():
+    if not str(value).isdigit():
         raise ValidationError(
             f"Значение {value} не является числом",
         )
