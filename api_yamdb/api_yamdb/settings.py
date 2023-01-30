@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "users.apps.UsersConfig",
     "reviews.apps.ReviewsConfig",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -105,12 +106,20 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Yamdb API",
+    "DESCRIPTION": "Yamdb",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
 
 USERNAME_MAX_LENGTH = 100
 EMAIL_MAX_LENGTH = 254

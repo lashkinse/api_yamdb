@@ -11,17 +11,17 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.filters import TitleFilter
-from api.mixins import CustomMixin
-from api.permissions import (IsAdmin, IsAdminOrReadOnly,
-                             IsStaffOrAuthorOrReadonly)
-from api.serializers import (CategorySerializer, CommentSerializer,
-                             GenreSerializer, GetTokenSerializer,
-                             ReviewSerializer, SignUpSerializer,
-                             TitleReadSerializer, TitleWriteSerializer,
-                             UserSerializer)
-from api.utils import generate_confirmation_code, send_confirmation_code
 from reviews.models import Category, Comment, Genre, Review, Title
+
+from .filters import TitleFilter
+from .mixins import CustomMixin
+from .permissions import IsAdmin, IsAdminOrReadOnly, IsStaffOrAuthorOrReadonly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, GetTokenSerializer,
+                          ReviewSerializer, SignUpSerializer,
+                          TitleReadSerializer, TitleWriteSerializer,
+                          UserSerializer)
+from .utils import generate_confirmation_code, send_confirmation_code
 
 User = get_user_model()
 
@@ -138,10 +138,9 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         methods=("get", "patch"),
         detail=False,
-        url_path="me",
         permission_classes=[IsAuthenticated],
     )
-    def my_account(self, request):
+    def me(self, request):
         serializer = self.get_serializer(
             request.user, data=request.data, partial=True
         )

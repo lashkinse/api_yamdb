@@ -1,32 +1,7 @@
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
 
-from .views import (CategoryViewSet, CommentViewSet, GenreViewSet,
-                    GetTokenView, ReviewViewSet, SignUpView, TitleViewSet,
-                    UserViewSet)
-
-router_v1 = DefaultRouter()
-router_v1.register("categories", CategoryViewSet, basename="category")
-router_v1.register("genres", GenreViewSet, basename="genre")
-router_v1.register("titles", TitleViewSet, basename="title")
-router_v1.register("users", UserViewSet, basename="users")
-router_v1.register(
-    r"titles/(?P<title_id>\d+)/reviews",
-    ReviewViewSet,
-    basename="reviews",
-)
-router_v1.register(
-    r"titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments",
-    CommentViewSet,
-    basename="comments",
-)
-
-auth_patterns = [
-    path("signup/", SignUpView.as_view()),
-    path("token/", GetTokenView.as_view()),
-]
+from api.v1.urls import urlpatterns as v1_urls
 
 urlpatterns = [
-    path("auth/", include(auth_patterns)),
-    path("", include(router_v1.urls)),
+    path("v1/", include(v1_urls)),
 ]
