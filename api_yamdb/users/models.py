@@ -1,24 +1,25 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from users.validators import validate_username
+
+from users.validators import validate_username, validate_username_max_length
+
+
+class UserRole(models.TextChoices):
+    USER = "user", "Пользователь"
+    MODERATOR = "moderator", "Модератор"
+    ADMIN = "admin", "Администратор"
 
 
 class User(AbstractUser):
-    ADMIN = "admin"
-    MODERATOR = "moderator"
-    USER = "user"
-    USER_ROLE_CHOICES = (
-        (ADMIN, "admin"),
-        (MODERATOR, "moderator"),
-        (USER, "user"),
-    )
-
     username = models.CharField(
         unique=True,
         max_length=settings.USERNAME_MAX_LENGTH,
         verbose_name="Имя пользователя",
-        validators=(validate_username,),
+        validators=[
+            validate_username_max_length,
+            validate_username,
+        ],
     )
     email = models.EmailField(
         unique=True,
@@ -27,8 +28,8 @@ class User(AbstractUser):
     )
     role = models.CharField(
         max_length=settings.USER_BIO_MAX_LENGTH,
-        choices=USER_ROLE_CHOICES,
-        default=USER,
+        choices=UserRole.choices,
+        default="user",
         verbose_name="Роль пользователя",
     )
     bio = models.TextField(
@@ -37,18 +38,20 @@ class User(AbstractUser):
         verbose_name="Биография пользователя",
     )
     confirmation_code = models.CharField(
-        max_length=settings.CONFIRMATION_CODE_MAX_LENGTH,
+        max_length=settings.CONFIRMATION_CODE_LENGTH,
         blank=True,
         verbose_name="Код доступа",
     )
 
     @property
     def is_admin(self):
-        return self.role == User.ADMIN or self.is_staff or self.is_superuser
+        return (
+            self.role == UserRole.ADMIN or self.is_staff or self.is_superuser
+        )
 
     @property
     def is_moderator(self):
-        return self.role == User.MODERATOR
+        return self.role == UserRole.MODERATOR
 
     class Meta:
         verbose_name = "Пользователь"

@@ -1,69 +1,151 @@
-import sqlite3
-from datetime import datetime
+import csv
 
-import pandas as pandas
-from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
+from django.core.management import BaseCommand
+
+from api_yamdb import settings
+from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
     help = "Imports the data from the CSV files into the database"
-    CSV_ROOT = "./static/data"
-    DATABASE_PATH = "./db.sqlite3"
 
-    USERS_TABLE = "users_user"
-    TITLE_TABLE = "reviews_title"
-    REVIEW_TABLE = "reviews_review"
-    COMMENT_TABLE = "reviews_comment"
-    CSV_TO_TABLE_MAP = (
-        ("users.csv", USERS_TABLE),
-        ("category.csv", "reviews_category"),
-        ("genre.csv", "reviews_genre"),
-        ("titles.csv", TITLE_TABLE),
-        ("genre_title.csv", "reviews_genretitle"),
-        ("comments.csv", COMMENT_TABLE),
-        ("review.csv", "reviews_review"),
-    )
+    @staticmethod
+    def import_users_from_csv():
+        """Imports the users from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "users.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    User(
+                        id=row[0],
+                        username=row[1],
+                        email=row[2],
+                        role=row[3],
+                        bio=row[4],
+                        first_name=row[5],
+                        last_name=row[6],
+                    ),
+                )
+        User.objects.bulk_create(obj_list)
 
-    def fix_dataframe(self, df, table_name):
-        """Fixes the dataframe so that it can be used in the database"""
-        if table_name == self.USERS_TABLE:
-            df = df.fillna("")
-            df.insert(len(df.columns), "password", "")
-            df.insert(len(df.columns), "is_superuser", 0)
-            df.insert(len(df.columns), "is_staff", 0)
-            df.insert(len(df.columns), "is_active", 1)
-            df.insert(len(df.columns), "date_joined", datetime.now())
-        if table_name == self.TITLE_TABLE:
-            df.rename(columns={"category": "category_id"}, inplace=True)
-        if table_name == self.REVIEW_TABLE or table_name == self.COMMENT_TABLE:
-            df.rename(columns={"author": "author_id"}, inplace=True)
-        return df
+    @staticmethod
+    def import_categories_from_csv():
+        """Imports the categories from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "category.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    Category(
+                        id=row[0],
+                        name=row[1],
+                        slug=row[2],
+                    ),
+                )
+            Category.objects.bulk_create(obj_list)
 
-    def import_csv(self, csv_file, table_name):
-        """Imports the data from the CSV file into the database"""
-        try:
-            conn = sqlite3.connect(self.DATABASE_PATH)
-            df = pandas.read_csv(
-                csv_file,
-                encoding="utf-8",
-            )
-            df = self.fix_dataframe(df, table_name)
-            df.to_sql(table_name, conn, if_exists="append", index=False)
-            conn.close()
-        except sqlite3.Error as e:
-            print(e)
-            return False
-        return True
+    @staticmethod
+    def import_comments_from_csv():
+        """Imports the comments from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "comments.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    Comment(
+                        id=row[0],
+                        review=Review.objects.get(id=row[1]),
+                        text=row[2],
+                        author=User.objects.get(id=row[3]),
+                        pub_date=row[4],
+                    ),
+                )
+            Comment.objects.bulk_create(obj_list)
 
-    def import_all_csv(self):
-        """Imports the data from the CSV files into the database"""
-        for csv_file, table_name in self.CSV_TO_TABLE_MAP:
-            if self.import_csv(self.CSV_ROOT + "/" + csv_file, table_name):
-                print(f"Successfully imported {csv_file}")
-            else:
-                print(f"Failed to import {csv_file}")
+    @staticmethod
+    def import_genres_from_csv():
+        """Imports the genres from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "genre.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    Genre(
+                        id=row[0],
+                        name=row[1],
+                        slug=row[2],
+                    ),
+                )
+            Genre.objects.bulk_create(obj_list)
+
+    @staticmethod
+    def import_titles_from_csv():
+        """Imports the titles from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "titles.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    Title(
+                        id=row[0],
+                        name=row[1],
+                        year=row[2],
+                        category=Category.objects.get(id=row[3]),
+                    ),
+                )
+            Title.objects.bulk_create(obj_list)
+
+    @staticmethod
+    def import_reviews_from_csv():
+        """Imports the reviews from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "review.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    Review(
+                        id=row[0],
+                        title=Title.objects.get(id=row[1]),
+                        text=row[2],
+                        author=User.objects.get(id=row[3]),
+                        score=row[4],
+                        pub_date=row[5],
+                    ),
+                )
+            Review.objects.bulk_create(obj_list)
+
+    @staticmethod
+    def import_genre_titles_from_csv():
+        """Imports the genre titles from the CSV file into the database"""
+        with open(settings.CSV_FILES_DIR / "genre_title.csv", "rt") as f:
+            f.readline()
+            obj_list = []
+            for row in csv.reader(f, dialect="excel"):
+                obj_list.append(
+                    GenreTitle(
+                        id=row[0],
+                        title=Title.objects.get(id=row[1]),
+                        genre=Genre.objects.get(id=row[2]),
+                    ),
+                )
+            GenreTitle.objects.bulk_create(obj_list)
 
     def handle(self, *args, **options):
-        print("Importing data...")
-        self.import_all_csv()
-        print("Finished importing data")
+        try:
+            self.import_users_from_csv()
+            self.import_categories_from_csv()
+            self.import_titles_from_csv()
+            self.import_reviews_from_csv()
+            self.import_genres_from_csv()
+            self.import_comments_from_csv()
+            self.import_genre_titles_from_csv()
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(e))
+            raise e
+        self.stdout.write(
+            self.style.SUCCESS("CSV data was successfully imported!")
+        )

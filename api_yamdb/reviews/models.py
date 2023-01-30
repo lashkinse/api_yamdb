@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from reviews.validator import validate_score, validate_year
+
+from reviews.validator import validate_year
 
 User = get_user_model()
 
@@ -96,7 +98,7 @@ class Review(models.Model):
     score = models.PositiveSmallIntegerField(
         verbose_name="Оценка",
         default=1,
-        validators=(validate_score,),
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
     )
     pub_date = models.DateTimeField("Дата публикации", auto_now=True)
 

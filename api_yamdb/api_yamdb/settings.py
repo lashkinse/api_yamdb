@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "users.apps.UsersConfig",
     "reviews.apps.ReviewsConfig",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -105,6 +106,13 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Yamdb API",
+    "DESCRIPTION": "Yamdb",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 SIMPLE_JWT = {
@@ -117,10 +125,11 @@ EMAIL_MAX_LENGTH = 254
 USER_BIO_MAX_LENGTH = 1024
 USER_ROLE_MAX_LENGTH = 100
 
-CONFIRMATION_CODE_MAX_LENGTH = 10
-CONFIRMATION_CODE_MIN_VALUE = 1000000000
-CONFIRMATION_CODE_MAX_VALUE = 9999999999
+CONFIRMATION_CODE_LENGTH = 36
 
 DEFAULT_FROM_EMAIL = "My Domain <noreply@mydomain.com>"
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "tmp/email-messages/"
+
+CSV_FILES_DIR = BASE_DIR / "static/data/"
+DATABASE_PATH = BASE_DIR / "db.sqlite3"

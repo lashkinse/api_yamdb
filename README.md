@@ -76,6 +76,12 @@ pip install -r requirements.txt
 python3 manage.py migrate
 ```
 
+Запустить первоначальную загрузку справочников:
+
+```
+python3 manage.py importcsv
+```
+
 Запустить проект:
 
 ```
