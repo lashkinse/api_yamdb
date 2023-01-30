@@ -1,9 +1,6 @@
 from django.urls import include, path
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
+from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
+                                   SpectacularSwaggerView)
 
 from api.v1.urls import urlpatterns as v1_urls
 

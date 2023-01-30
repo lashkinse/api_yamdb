@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, Review, Title
 from users import validators
-from users.validators import validate_username_max_length
 
 User = get_user_model()
 
@@ -97,7 +96,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def validate_username(value):
-        return validate_username_max_length(
+        return validators.validate_username_max_length(
             value
         ) and validators.validate_username(value)
 
