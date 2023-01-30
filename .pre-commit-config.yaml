@@ -2,9 +2,9 @@
 # Установка:
 #   заходим в каталог с проектом и выполняем `pip install pre-commit`
 #   рядом с setup.cfg создаем файл `.pre-commit-config.yaml` с содержимым этого файла
+#   для импортов необходимо прописать known_first_party в файле .isort.cfg
 # Запуск полного сканирования:
 #   из корня проекта запускаем команду `pre-commit run --all-files`
-#   предварительно неободимо прописать known_first_party в файле .isort.cfg
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0

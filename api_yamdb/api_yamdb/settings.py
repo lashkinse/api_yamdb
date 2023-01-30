@@ -120,7 +120,6 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-
 USERNAME_MAX_LENGTH = 100
 EMAIL_MAX_LENGTH = 254
 USER_BIO_MAX_LENGTH = 1024
@@ -133,3 +132,6 @@ CONFIRMATION_CODE_MAX_VALUE = 9999999999
 DEFAULT_FROM_EMAIL = "My Domain <noreply@mydomain.com>"
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "tmp/email-messages/"
+
+CSV_FILES_DIR = BASE_DIR / "static/data/"
+DATABASE_PATH = BASE_DIR / "db.sqlite3"
