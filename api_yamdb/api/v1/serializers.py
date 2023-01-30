@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, Review, Title
 from users import validators
+from users.validators import validate_username_max_length
 
 User = get_user_model()
 
@@ -96,7 +97,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def validate_username(value):
-        return validators.validate_username(value)
+        return validate_username_max_length(
+            value
+        ) and validators.validate_username(value)
 
 
 class SignUpSerializer(serializers.Serializer):
@@ -106,6 +109,7 @@ class SignUpSerializer(serializers.Serializer):
         required=True,
         max_length=settings.USERNAME_MAX_LENGTH,
         validators=[
+            validators.validate_username_max_length,
             validators.validate_username,
         ],
     )
@@ -121,11 +125,12 @@ class GetTokenSerializer(serializers.Serializer):
         required=True,
         max_length=settings.USERNAME_MAX_LENGTH,
         validators=[
+            validators.validate_username_max_length,
             validators.validate_username,
         ],
     )
 
     confirmation_code = serializers.CharField(
         required=True,
-        max_length=settings.CONFIRMATION_CODE_MAX_LENGTH,
+        max_length=settings.CONFIRMATION_CODE_LENGTH,
     )

@@ -1,4 +1,4 @@
-from random import randint
+import uuid
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -6,10 +6,7 @@ from django.core.mail import send_mail
 
 def generate_confirmation_code():
     """Генерирует код подтверждения"""
-    return randint(
-        settings.CONFIRMATION_CODE_MIN_VALUE,
-        settings.CONFIRMATION_CODE_MAX_VALUE,
-    )
+    return uuid.uuid4()
 
 
 def send_confirmation_code(user):
