@@ -1,18 +1,5 @@
 # Проект YaMDb (api_yamdb)
 
-[![Python](https://img.shields.io/badge/-Python-464641?style=flat-square&logo=Python)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-464646?style=flat-square&logo=django)](https://www.djangoproject.com/)
-[![Pytest](https://img.shields.io/badge/Pytest-464646?style=flat-square&logo=pytest)](https://docs.pytest.org/en/6.2.x/)
-[![Postman](https://img.shields.io/badge/Postman-464646?style=flat-square&logo=postman)](https://www.postman.com/)
-
-![python version](https://img.shields.io/badge/Python-3.9-green)
-![django version](https://img.shields.io/badge/Django-2.2-green)
-![pyjwt version](https://img.shields.io/badge/PyJWT-2.1-green)
-![pytest version](https://img.shields.io/badge/pytest-6.2-green)
-![requests version](https://img.shields.io/badge/requests-2.26-green)
-
-## Описание
-
 Проект YaMDb собирает отзывы пользователей на произведения. Сами произведения в YaMDb не хранятся, здесь нельзя
 посмотреть фильм или послушать музыку.
 Произведения делятся на категории, такие как «Книги», «Фильмы», «Музыка». Например, в категории «Книги» могут быть
@@ -26,6 +13,12 @@
 рейтинг (целое число). На одно произведение пользователь может оставить только один отзыв.
 Пользователи могут оставлять комментарии к отзывам.
 Добавлять отзывы, комментарии и ставить оценки могут только аутентифицированные пользователи.
+
+![python version](https://img.shields.io/badge/Python-3.9-green)
+![django version](https://img.shields.io/badge/Django-2.2-green)
+![pyjwt version](https://img.shields.io/badge/PyJWT-2.1-green)
+![pytest version](https://img.shields.io/badge/pytest-6.2-green)
+![requests version](https://img.shields.io/badge/requests-2.26-green)
 
 ## YaMDb API
 
