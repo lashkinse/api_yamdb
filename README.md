@@ -1,6 +1,6 @@
 # Проект YaMDb (api_yamdb)
 ![python version](https://img.shields.io/badge/Python-3.9-green)
-![django version](https://img.shields.io/badge/Django-2.2-green)
+![django version](https://img.shields.io/badge/Django-3.2-green)
 ![pyjwt version](https://img.shields.io/badge/PyJWT-2.1-green)
 ![pytest version](https://img.shields.io/badge/pytest-6.2-green)
 ![requests version](https://img.shields.io/badge/requests-2.26-green)
