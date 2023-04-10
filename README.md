@@ -1,4 +1,9 @@
 # Проект YaMDb (api_yamdb)
+![python version](https://img.shields.io/badge/Python-3.9-green)
+![django version](https://img.shields.io/badge/Django-2.2-green)
+![pyjwt version](https://img.shields.io/badge/PyJWT-2.1-green)
+![pytest version](https://img.shields.io/badge/pytest-6.2-green)
+![requests version](https://img.shields.io/badge/requests-2.26-green)
 
 Проект YaMDb собирает отзывы пользователей на произведения. Сами произведения в YaMDb не хранятся, здесь нельзя
 посмотреть фильм или послушать музыку.
@@ -13,12 +18,6 @@
 рейтинг (целое число). На одно произведение пользователь может оставить только один отзыв.
 Пользователи могут оставлять комментарии к отзывам.
 Добавлять отзывы, комментарии и ставить оценки могут только аутентифицированные пользователи.
-
-![python version](https://img.shields.io/badge/Python-3.9-green)
-![django version](https://img.shields.io/badge/Django-2.2-green)
-![pyjwt version](https://img.shields.io/badge/PyJWT-2.1-green)
-![pytest version](https://img.shields.io/badge/pytest-6.2-green)
-![requests version](https://img.shields.io/badge/requests-2.26-green)
 
 ## YaMDb API
 
