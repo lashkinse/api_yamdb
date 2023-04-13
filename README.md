@@ -1,9 +1,4 @@
 # Проект YaMDb (api_yamdb)
-![python version](https://img.shields.io/badge/Python-3.9-green)
-![django version](https://img.shields.io/badge/Django-3.2-green)
-![pyjwt version](https://img.shields.io/badge/PyJWT-2.1-green)
-![pytest version](https://img.shields.io/badge/pytest-6.2-green)
-![requests version](https://img.shields.io/badge/requests-2.26-green)
 
 Проект YaMDb собирает отзывы пользователей на произведения. Сами произведения в YaMDb не хранятся, здесь нельзя
 посмотреть фильм или послушать музыку.
@@ -19,6 +14,13 @@
 Пользователи могут оставлять комментарии к отзывам.
 Добавлять отзывы, комментарии и ставить оценки могут только аутентифицированные пользователи.
 
+## Стек технологий
+
+* Python 3.9
+* Django 3.2
+* Django REST framework
+* JWT + Djoser
+
 ## YaMDb API
 
 Доступ к БД проекта осуществляется через Api.
@@ -28,7 +30,7 @@
 http://127.0.0.1:8000/redoc/
 ```
 
-## Как запустить проект:
+## Как запустить проект
 
 Cоздать и активировать виртуальное окружение:
 
